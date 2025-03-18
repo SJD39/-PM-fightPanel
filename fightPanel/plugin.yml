@@ -1,0 +1,5 @@
+name: fightPanel
+main: fightPanel\MainClass
+src-namespace-prefix: fightPanel
+version: 1.0.0
+api: 5.0.0
