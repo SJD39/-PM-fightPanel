@@ -11,13 +11,13 @@ use pocketmine\utils\TextFormat;
 
 class MainClass extends PluginBase{
 	// 每秒攻击次数
-	public $attackCount = array();
+	public array $attackCount = [];
 	// 每秒造成伤害
-	public $outDamageCount = array();
+	public array $outDamageCount = [];
 	// 每秒受到伤害
-	public $inDamageCount = array();
+	public array $inDamageCount = [];
 
-	public $onlinePlayers = [];
+	public array $onlinePlayers = [];
 
 	public function onLoad() : void{
 		$this->getLogger()->info(TextFormat::WHITE . "战斗面板加载中！");
@@ -33,22 +33,10 @@ class MainClass extends PluginBase{
 		$this->getLogger()->info(TextFormat::DARK_RED . "战斗面板关闭！");
 	}
 
-	public function get_total_millisecond()
-	{
-		$time = explode(" ", microtime());
-		$time = ($time [1] + $time [0]) * 1000;
-		$time = round($time) . '';
-		return $time;
-	}
-
-	public function fromNameGetPlayer($name){
-		$this->onlinePlayers = $this->getServer()->getOnlinePlayers();
-
-		foreach($this->onlinePlayers as $player){
-			if($player->getName() == $name){
-				return $player;
-			}
-		}
-		return null;
+	/**
+	 * 取十三位时间戳
+	 */
+	public function get_total_millisecond() : int{
+		return (int) microtime(true) * 1000;
 	}
 }

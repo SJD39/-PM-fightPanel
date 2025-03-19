@@ -12,9 +12,6 @@ class BroadcastTask extends Task{
 	public function __construct(private MainClass $plugin, private Server $server){}
 
 	public function onRun() : void{
-		// 定时移出超过1秒的点击计数
-		$keys = array_keys($this->plugin->attackCount);
-
 		// 遍历每个玩家点击计数数组
 		foreach($this->plugin->attackCount as $playerName => $playerAttackCount){
 			// 遍历玩家点击计数
@@ -55,13 +52,13 @@ class BroadcastTask extends Task{
 			$playerName = $player->getName();
 
 			if(!array_key_exists($playerName, $this->plugin->attackCount)){
-				$this->plugin->attackCount[$playerName] = array();
+				$this->plugin->attackCount[$playerName] = [];
 			}
 			if(!array_key_exists($playerName, $this->plugin->outDamageCount)){
-				$this->plugin->outDamageCount[$playerName] = array();
+				$this->plugin->outDamageCount[$playerName] = [];
 			}
 			if(!array_key_exists($playerName, $this->plugin->inDamageCount)){
-				$this->plugin->inDamageCount[$playerName] = array();
+				$this->plugin->inDamageCount[$playerName] = [];
 			}
 
 			$cps = count($this->plugin->attackCount[$playerName]);
