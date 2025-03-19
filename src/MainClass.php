@@ -7,9 +7,17 @@ namespace fightPanel;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\PluginBase;
+use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 
 class MainClass extends PluginBase{
+	public Config $config;
+
+	public $enlable = true;
+	// 0 一直发送
+	// 1 触发时发送
+	public $sendTime = 0;
+
 	// 每秒攻击次数
 	public array $attackCount = [];
 	// 每秒造成伤害
@@ -21,6 +29,11 @@ class MainClass extends PluginBase{
 
 	public function onLoad() : void{
 		$this->getLogger()->info(TextFormat::WHITE . "战斗面板加载中！");
+
+		// 处理配置文件
+		$this->config = new Config($this->getDataFolder() . "config.json", Config::JSON, [
+			"format" => "CPS: {cps} DPS: {dps} HPS: {hps}"
+		]);
 	}
 
 	public function onEnable() : void{
