@@ -71,14 +71,23 @@ class BroadcastTask extends Task{
 				$hps += $value[1];
 			}
 
+			$sendPopupValue = $this->plugin->config->get("format");
 			if(array_key_exists($playerName, $this->plugin->attackCount)){
 				$player->sendPopup(
-					"CPS: ".$cps." ".
-					"DPS: ".$dps." ".
-					"HPS: ".$hps." "
+					str_replace(
+						["{cps}", "{dps}", "{hps}"],
+						[$cps, $dps, $hps],
+						$sendPopupValue
+					)
 				);
 			}else{
-				$player->sendPopup("CPS: 0 DPS: 0 HPS: 0");
+				$player->sendPopup(
+					str_replace(
+						["{cps}", "{dps}", "{hps}"],
+						[0, 0, 0],
+						$sendPopupValue
+					)
+				);
 			}
 		}
 	}
