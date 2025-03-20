@@ -47,8 +47,8 @@ class BroadcastTask extends Task{
 		}
 
 		// 遍历在线玩家，发送弹窗
-		$this->plugin->onlinePlayers = $this->server->getOnlinePlayers();
-		foreach($this->plugin->onlinePlayers as $player){
+		$onlinePlayers = $this->server->getOnlinePlayers();
+		foreach($onlinePlayers as $player){
 			$playerName = $player->getName();
 
 			if(!array_key_exists($playerName, $this->plugin->attackCount)){
@@ -71,24 +71,32 @@ class BroadcastTask extends Task{
 				$hps += $value[1];
 			}
 
-			$sendPopupValue = $this->plugin->config->get("format");
-			if(array_key_exists($playerName, $this->plugin->attackCount)){
-				$player->sendPopup(
-					str_replace(
-						["{cps}", "{dps}", "{hps}"],
-						[$cps, $dps, $hps],
-						$sendPopupValue
-					)
-				);
-			}else{
-				$player->sendPopup(
-					str_replace(
-						["{cps}", "{dps}", "{hps}"],
-						[0, 0, 0],
-						$sendPopupValue
-					)
-				);
+			$hitCount = 0;
+			$missCount = 0;
+			if(!array_key_exists($playerName, $this->plugin->hitCount)){
+				$this->plugin->hitCount[$playerName] = [];
 			}
+			foreach($this->plugin->hitCount[$playerName] as $value){
+				if($value[1]){
+					$hitCount++;
+				}else{
+					$missCount++;
+				}
+			}
+			if($hitCount == 0 || $missCount == 0){
+				$hitRate = ($hitCount == 0) ? 0 : 1;
+			}else{
+				$hitRate = $hitCount / ($hitCount + $missCount);
+			}
+
+			$sendPopupValue = $this->plugin->config->get("format");
+			$player->sendPopup(
+				str_replace(
+					["{cps}", "{dps}", "{hps}", "{hitRate}"],
+					[$cps, $dps, $hps, ($hitRate * 100) . "%"],
+					$sendPopupValue
+				)
+			);
 		}
 	}
 }

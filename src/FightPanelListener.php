@@ -15,28 +15,39 @@ class FightPanelListener implements Listener{
 	public function __construct(private MainClass $plugin){ }
 
 	public function onPlayerMissSwing(PlayerMissSwingEvent $event):void{
-		// 记录击打次数
 		$playerName = $event->getPlayer()->getName();
+
+		// 错过计数
+		if(!array_key_exists($playerName, $this->plugin->hitCount)){
+			$this->plugin->hitCount[$playerName] = [];
+		}
+		$this->plugin->hitCount[$playerName][] = [$this->plugin->get_total_millisecond(), false];
+		if(count($this->plugin->hitCount[$playerName]) > 10){
+			array_shift($this->plugin->hitCount[$playerName]);
+		}
+
+		// 记录击打次数
 		if(!array_key_exists($playerName, $this->plugin->attackCount)){
-			$this->plugin->attackCount[$playerName] = array();
+			$this->plugin->attackCount[$playerName] = [];
 		}
 		$this->plugin->attackCount[$playerName][] = $this->plugin->get_total_millisecond();
 	}
 
 	public function onEntityDamageByEntity(EntityDamageByEntityEvent $event):void{
-		$this->plugin->getLogger()->info(
-			$event->getDamager()->getName().
-			" 攻击了 ".
-			$event->getEntity()->getName().
-			" 造成了 ".
-			$event->getFinalDamage().
-			" 点伤害"
-		);
+		// 命中计数
+		$playerName = $event->getDamager()->getName();
+		if(!array_key_exists($playerName, $this->plugin->hitCount)){
+			$this->plugin->hitCount[$playerName] = [];
+		}
+		$this->plugin->hitCount[$playerName][] = [$this->plugin->get_total_millisecond(), true];
+		if(count($this->plugin->hitCount[$playerName]) > 10){
+			array_shift($this->plugin->hitCount[$playerName]);
+		}
 
 		// 记录击打次数
 		$playerName = $event->getDamager()->getName();
 		if(!array_key_exists($playerName, $this->plugin->attackCount)){
-			$this->plugin->attackCount[$playerName] = array();
+			$this->plugin->attackCount[$playerName] = [];
 		}
 		$this->plugin->attackCount[$playerName][] = $this->plugin->get_total_millisecond();
 

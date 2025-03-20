@@ -16,7 +16,7 @@ class MainClass extends PluginBase{
 	public $enlable = true;
 	// 0 一直发送
 	// 1 触发时发送
-	public $sendTime = 0;
+	public $sendTime = 1;
 
 	// 每秒攻击次数
 	public array $attackCount = [];
@@ -24,15 +24,15 @@ class MainClass extends PluginBase{
 	public array $outDamageCount = [];
 	// 每秒受到伤害
 	public array $inDamageCount = [];
-
-	public array $onlinePlayers = [];
+	// 有效攻击计数
+	public array $effectiveCount = [];
 
 	public function onLoad() : void{
 		$this->getLogger()->info(TextFormat::WHITE . "战斗面板加载中！");
 
 		// 处理配置文件
 		$this->config = new Config($this->getDataFolder() . "config.json", Config::JSON, [
-			"format" => "CPS: {cps} DPS: {dps} HPS: {hps}"
+			"format" => "CPS: {cps} DPS: {dps} HPS: {hps} 命中率: {hitRate}"
 		]);
 	}
 
